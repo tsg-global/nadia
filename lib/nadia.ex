@@ -12,11 +12,16 @@ defmodule Nadia do
   @base_file_url "https://api.telegram.org/file/bot"
 
   def start_link(settings) do
-    state = %{
-      timeout: Keyword.get(settings, :timeout, 5),
-      token: Keyword.fetch(settings, :token)
-    }
-    Agent.start_link(fn -> state end)
+    case Keyword.fetch(settings, :token) do
+      {:ok, token} ->
+        state = %{
+          timeout: Keyword.get(settings, :timeout, 5),
+          token: token
+        }
+        Agent.start_link(fn -> state end)
+
+      other -> other
+    end
   end
 
   defp agent_request(pid, method, options \\ [], file_field \\ nil) do
