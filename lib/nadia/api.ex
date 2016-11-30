@@ -8,9 +8,6 @@ defmodule Nadia.API do
   @default_timeout 5
   @base_url "https://api.telegram.org/bot"
 
-  defp token, do: config_or_env(:token)
-  defp recv_timeout, do: config_or_env(:recv_timeout) || @default_timeout
-
   defp config_or_env(key) do
     case Application.fetch_env(:nadia, key) do
       {:ok, {:system, var}} -> System.get_env(var)
@@ -24,7 +21,10 @@ defmodule Nadia.API do
     end
   end
 
-  defp build_url(method), do: @base_url <> token() <> "/" <> method
+  #defp token, do: config_or_env(:token)
+  defp recv_timeout, do: config_or_env(:recv_timeout) || @default_timeout
+
+  defp build_url(method, tokn), do: @base_url <> tokn <> "/" <> method
 
   defp process_response(response, method) do
     case decode_response(response) do
@@ -94,18 +94,19 @@ defmodule Nadia.API do
   Generic method to call Telegram Bot API.
 
   Args:
+  * `token` - the API token
   * `method` - name of API method
   * `options` - orddict of options
   * `file_field` - specify the key of file_field in `options` when sending files
   """
-  def request(method, options \\ [], file_field \\ nil) do
+  def request(token, method, options \\ [], file_field \\ nil) do
     method
-    |> build_url
+    |> build_url(token)
     |> HTTPoison.post(build_request(options, file_field), [], build_options(options))
     |> process_response(method)
   end
 
-  def request?(method, options \\ [], file_field \\ nil) do
-    {_, response} = request(method, options, file_field); response
+  def request?(token, method, options \\ [], file_field \\ nil) do
+    {_, response} = request(token, method, options, file_field); response
   end
 end
