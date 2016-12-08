@@ -14,7 +14,7 @@ defmodule Nadia do
   defp api_request(method, options \\ [], file_field \\ nil) do
     case Keyword.fetch(options, :token) do
       {:ok, token} ->
-        timeout = Keyword.get(options, :timeout, 5000)
+        timeout = Keyword.get(options, :timeout, 5)
         API.request(token, method, Keyword.merge(options, [timeout: timeout]), file_field)
 
       other -> other
