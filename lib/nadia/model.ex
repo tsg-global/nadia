@@ -154,6 +154,14 @@ defmodule Nadia.Model do
     @type t :: %ChatMember{user: User.t, status: binary}
   end
 
+  defmodule WebhookInfo do
+    defstruct url: nil, has_custom_certificate: false, pending_update_count: nil,
+      last_error_date: nil, last_error_message: nil, max_connections: nil, allowed_updates: []
+    @type t :: %WebhookInfo{url: binary, has_custom_certificate: boolean,
+      pending_update_count: integer, last_error_date: integer, last_error_message: binary,
+      max_connections: integer, allowed_updates: [binary]}
+  end
+
   defmodule Error do
     defexception reason: nil
     @type t :: %Error{reason: any}

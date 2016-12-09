@@ -109,7 +109,7 @@ defmodule NadiaTest do
 
   test "delete webhook", %{token: token} do
     use_cassette "delete_webhook" do
-      assert Nadia.set_webhook(token: token) == :ok
+      assert Nadia.delete_webhook(token: token) == :ok
     end
   end
 
