@@ -105,7 +105,7 @@ defmodule Nadia.GraphTest do
 
   test "get_views" do
     use_cassette "graph/get_views" do
-      {:ok, result} = Nadia.Graph.get_views("Sample-Page-12-15", year: 2012, month: 12)
+      {:ok, result} = Nadia.Graph.get_views("Sample-Page-12-15", [year: 2012, month: 12])
       assert result.views == 40
     end
   end

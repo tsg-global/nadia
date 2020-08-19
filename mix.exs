@@ -16,12 +16,12 @@ defmodule Nadia.Mixfile do
 
   defp deps do
     [
-      {:httpoison, "~> 1.7.0"},
+      {:httpoison, "~> 1.7"},
       {:jason, "~> 1.1"},
-      {:exvcr, "~> 0.11.1", only: [:dev, :test]},
+      {:exvcr, "~> 0.11", only: [:dev, :test]},
       {:earmark, "~> 1.2", only: :docs},
-      {:ex_doc, "~> 0.22.1", only: :docs},
-      {:inch_ex, "~> 2.0.0", only: :docs}
+      {:ex_doc, "~> 0.22", only: :docs},
+      {:inch_ex, "~> 2.0", only: :docs},
     ]
   end
 

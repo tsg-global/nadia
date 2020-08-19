@@ -6,7 +6,36 @@ defmodule Nadia.Graph.API do
   alias Nadia.Graph.Model.Error
   alias Nadia.Config
 
-  defp build_url(method), do: Config.graph_base_url() <> "/" <> method
+  @doc """
+  Generic method to call Telegram Bot API.
+
+  Args:
+  * `method` - name of API method
+  * `params` - request parameters
+  * `options` - request options
+  * `file_field` - specify the key of file_field in `options` when sending files
+  """
+  def request(method, params \\ %{}, options \\ [], file_field \\ nil) do
+    method
+    |> build_url(options)
+    |> HTTPoison.post(build_request(params, file_field), [], build_options(options))
+    |> process_response(method)
+  end
+
+  defp build_options(options) when is_list(options) do
+    recv_timeout = Config.recv_timeout(options)
+
+    opts =
+      Keyword.take(options, [
+        :timeout,
+        :hackney,
+      ])
+      |> Keyword.put(:recv_timeout, recv_timeout)
+
+    opts
+  end
+
+  defp build_url(method, options), do: Config.graph_base_url(options) <> "/" <> method
 
   defp process_response(response, method) do
     case decode_response(response) do
@@ -35,7 +64,11 @@ defmodule Nadia.Graph.API do
        ]}
   end
 
-  defp build_request(params, file_field) do
+  defp build_request(params, file_field) when is_map(params) do
+    build_request(Map.to_list(params), file_field)
+  end
+
+  defp build_request(params, file_field) when is_list(params) do
     params =
       params
       |> Keyword.update(:reply_markup, nil, &Jason.encode!(&1))
@@ -47,22 +80,5 @@ defmodule Nadia.Graph.API do
     else
       {:form, params}
     end
-  end
-
-  @doc """
-  Generic method to call Telegram Bot API.
-
-  Args:
-  * `method` - name of API method
-  * `options` - orddict of options
-  * `file_field` - specify the key of file_field in `options` when sending files
-  """
-  def request(method, options \\ [], file_field \\ nil) do
-    timeout = (Keyword.get(options, :timeout, 0) + Config.recv_timeout()) * 1000
-
-    method
-    |> build_url
-    |> HTTPoison.post(build_request(options, file_field), [], recv_timeout: timeout)
-    |> process_response(method)
   end
 end
