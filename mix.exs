@@ -16,7 +16,7 @@ defmodule Nadia.Mixfile do
 
   defp deps do
     [
-      {:httpoison, "~> 1.7.0"},
+      {:httpoison, "~> 1.8.0"},
       {:jason, "~> 1.1"},
       {:exvcr, "~> 0.12.1", only: [:dev, :test]},
       {:earmark, "~> 1.2", only: :docs},
